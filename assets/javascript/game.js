@@ -24,7 +24,7 @@ var game = {
             alert('You already tried this letter')
         } else if(word.includes(e) && !this.triedLetters.includes(e)) {  
             this.replaceBlank(e) 
-            if (this.letterDisplay == word) {
+            if (!this.letterDisplay.includes('_')) {
                 alert('you won');
                 let ooga = document.getElementById('ooga');
                 ooga.currentTime = 0;
