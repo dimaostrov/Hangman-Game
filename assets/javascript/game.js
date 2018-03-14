@@ -5,27 +5,35 @@ document.onkeyup = function(e){
     
 }
 
-
-
 var game = {
     
     // Initialize tries, all tried letters, word bank for answers, and the display
-    tries: 8,
+    tries: 0,
     triedLetters: [],
     letterDisplay: [],
-    possibleAnswers: ['paleo', 'caveman', 'coconut', 'stone', 'bone', 'rock', 'cave art', 'bison', 'mammoth', 'fire'],
+    possibleAnswers: ['paleo', 'caveman', 'coconut', 'stone', 'bone', 'rock', 'cavepaintings', 'bison', 'mammoth', 'fire'],
     display: document.getElementById('display'),
     triesDisplay: document.getElementById('tries'),
+    hangImage: document.getElementById('hang'),
     
     
     
     // function that gets executed each time a user presses a letter, and adds up tries, and calls other functions to change display.
     checkLetter: function(e){
-        if(this.triedLetters.includes(e)) { alert('You already tried this letter')}
-        if(word.includes(e) && !this.triedLetters.includes(e)) { this.triedLetters.push(e) && this.replaceBlank(e) }
-        if(!word.includes(e)) { this.triedLetters.push(e) && this.tries-- && this.checkLeftTries /* && display that the letter is not there */ }    
-        this.display.innerHTML = this.letterDisplay;
-        this.triesDisplay.innerHTML = this.tries;
+        if(this.triedLetters.includes(e)) { 
+            alert('You already tried this letter')
+        } else if(word.includes(e) && !this.triedLetters.includes(e)) {  
+            this.replaceBlank(e) 
+        } else if(!word.includes(e) && e.length == 1 && e.match(/[a-z]/)) { 
+            this.triedLetters.push(e)
+            this.tries++ 
+            this.checkLeftTries()
+            this.hangImage.src = `assets/images/${this.tries}.jpeg`
+        }    
+        
+        
+        this.display.innerHTML = this.letterDisplay.join(' ');
+        this.triesDisplay.innerHTML = this.triedLetters.join('  ');
     },  
     
     
@@ -34,15 +42,23 @@ var game = {
         var word = this.possibleAnswers[Math.floor(Math.random()*this.possibleAnswers.length)]; 
         this.letterDisplay = '_'.repeat(word.length).split('');
         this.triedLetters = [];
-        tries = 8;
-        display.innerHTML = this.letterDisplay;
-        this.triesDisplay.innerHTML = this.tries;
-        
+        this.tries = 0;
+        display.innerHTML = this.letterDisplay.join('   ');
+        this.triesDisplay.innerHTML = this.triedLetters.join('  ');
+        this.hangImage.src = `assets/images/${this.tries}.jpeg`
         return word.split('');  
+    },
+    newWord: function(){
+        word = game.pickRandom()
     },
 
     // checks hp of user, and will reboot word if the user looses
-    checkLeftTries: () => tries == 0 && prompt('You lose') && this.newWord(),
+    checkLeftTries: function() {
+        if(this.tries > 5){
+            alert('You lose')
+            game.newWord()
+        }
+    },
     
     // function to replace __ in case user gets the letter right
     replaceBlank: (x) => {
