@@ -24,11 +24,21 @@ var game = {
             alert('You already tried this letter')
         } else if(word.includes(e) && !this.triedLetters.includes(e)) {  
             this.replaceBlank(e) 
+            if (this.letterDisplay == word) {
+                alert('you won');
+                let ooga = document.getElementById('ooga');
+                ooga.currentTime = 0;
+                ooga.play()
+                game.newWord()
+            }
         } else if(!word.includes(e) && e.length == 1 && e.match(/[a-z]/)) { 
             this.triedLetters.push(e)
             this.tries++ 
             this.checkLeftTries()
             this.hangImage.src = `assets/images/${this.tries}.jpeg`
+            let wrong = document.getElementById('wrong');
+            wrong.currentTime = 0;
+            wrong.play()
         }    
         
         
